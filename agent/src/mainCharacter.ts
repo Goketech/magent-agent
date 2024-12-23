@@ -6,7 +6,7 @@ import { webSearchPlugin } from "@ai16z/plugin-web-search";
 export const mainCharacter: Character = {
     ...defaultCharacter,
     clients: [
-        Clients.TWITTER,
+        // Clients.TWITTER,
         Clients.TELEGRAM,
         Clients.DIRECT,
         Clients.DISCORD,
