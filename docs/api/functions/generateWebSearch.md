@@ -16,4 +16,4 @@
 
 ## Defined in
 
-packages/core/src/generation.ts:1022
+[packages/core/src/generation.ts:1022](https://github.com/Goketech/magent-agent/blob/main/packages/core/src/generation.ts#L1022)

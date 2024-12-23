@@ -342,4 +342,4 @@ Optional Twitter profile
 
 ## Defined in
 
-packages/core/src/types.ts:609
+[packages/core/src/types.ts:609](https://github.com/Goketech/magent-agent/blob/main/packages/core/src/types.ts#L609)

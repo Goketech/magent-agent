@@ -20,4 +20,4 @@
 
 ## Defined in
 
-packages/core/src/generation.ts:675
+[packages/core/src/generation.ts:675](https://github.com/Goketech/magent-agent/blob/main/packages/core/src/generation.ts#L675)

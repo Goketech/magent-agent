@@ -26,4 +26,4 @@
 
 ## Defined in
 
-packages/core/src/generation.ts:998
+[packages/core/src/generation.ts:998](https://github.com/Goketech/magent-agent/blob/main/packages/core/src/generation.ts#L998)

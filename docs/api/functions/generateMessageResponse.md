@@ -28,4 +28,4 @@ The completed message.
 
 ## Defined in
 
-packages/core/src/generation.ts:759
+[packages/core/src/generation.ts:759](https://github.com/Goketech/magent-agent/blob/main/packages/core/src/generation.ts#L759)

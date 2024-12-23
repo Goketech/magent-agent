@@ -28,4 +28,4 @@ A string that concatenates the outputs of each provider.
 
 ## Defined in
 
-packages/core/src/providers.ts:10
+[packages/core/src/providers.ts:10](https://github.com/Goketech/magent-agent/blob/main/packages/core/src/providers.ts#L10)

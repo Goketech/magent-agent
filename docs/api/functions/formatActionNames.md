@@ -20,4 +20,4 @@ A comma-separated string of action names.
 
 ## Defined in
 
-packages/core/src/actions.ts:47
+[packages/core/src/actions.ts:47](https://github.com/Goketech/magent-agent/blob/main/packages/core/src/actions.ts#L47)

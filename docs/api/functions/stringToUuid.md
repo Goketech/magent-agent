@@ -14,4 +14,4 @@
 
 ## Defined in
 
-packages/core/src/uuid.ts:4
+[packages/core/src/uuid.ts:4](https://github.com/Goketech/magent-agent/blob/main/packages/core/src/uuid.ts#L4)

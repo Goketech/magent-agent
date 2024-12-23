@@ -8,4 +8,4 @@ Type inference
 
 ## Defined in
 
-packages/core/src/environment.ts:23
+[packages/core/src/environment.ts:23](https://github.com/Goketech/magent-agent/blob/main/packages/core/src/environment.ts#L23)

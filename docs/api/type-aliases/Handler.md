@@ -24,4 +24,4 @@ Handler function type for processing messages
 
 ## Defined in
 
-packages/core/src/types.ts:366
+[packages/core/src/types.ts:366](https://github.com/Goketech/magent-agent/blob/main/packages/core/src/types.ts#L366)

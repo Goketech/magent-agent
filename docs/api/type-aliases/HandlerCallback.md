@@ -18,4 +18,4 @@ Callback function type for handlers
 
 ## Defined in
 
-packages/core/src/types.ts:377
+[packages/core/src/types.ts:377](https://github.com/Goketech/magent-agent/blob/main/packages/core/src/types.ts#L377)

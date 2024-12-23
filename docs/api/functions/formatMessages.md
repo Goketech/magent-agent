@@ -22,4 +22,4 @@ string
 
 ## Defined in
 
-packages/core/src/messages.ts:60
+[packages/core/src/messages.ts:60](https://github.com/Goketech/magent-agent/blob/main/packages/core/src/messages.ts#L60)

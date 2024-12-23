@@ -16,4 +16,4 @@
 
 ## Defined in
 
-packages/core/src/goals.ts:30
+[packages/core/src/goals.ts:30](https://github.com/Goketech/magent-agent/blob/main/packages/core/src/goals.ts#L30)

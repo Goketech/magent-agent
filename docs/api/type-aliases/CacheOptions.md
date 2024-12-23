@@ -12,4 +12,4 @@
 
 ## Defined in
 
-packages/core/src/types.ts:944
+[packages/core/src/types.ts:944](https://github.com/Goketech/magent-agent/blob/main/packages/core/src/types.ts#L944)

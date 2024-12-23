@@ -1,5 +1,7 @@
 import { Character, ModelProviderName, Clients } from "@ai16z/eliza";
 import { defaultCharacter } from "./defaultCharacter.ts";
+import { imageGenerationPlugin } from "@ai16z/plugin-image-generation";
+import { webSearchPlugin } from "@ai16z/plugin-web-search";
 
 export const mainCharacter: Character = {
     ...defaultCharacter,
@@ -9,7 +11,8 @@ export const mainCharacter: Character = {
         Clients.DIRECT,
         Clients.DISCORD,
     ],
-    modelProvider: ModelProviderName.GAIANET,
+    plugins: [imageGenerationPlugin, webSearchPlugin],
+    modelProvider: ModelProviderName.OPENAI,
     name: "magent",
     username: "magent",
     bio: [

@@ -14,4 +14,4 @@
 
 ## Defined in
 
-packages/core/src/parsing.ts:36
+[packages/core/src/parsing.ts:36](https://github.com/Goketech/magent-agent/blob/main/packages/core/src/parsing.ts#L36)

@@ -14,4 +14,4 @@
 
 ## Defined in
 
-packages/core/src/embedding.ts:101
+[packages/core/src/embedding.ts:101](https://github.com/Goketech/magent-agent/blob/main/packages/core/src/embedding.ts#L101)

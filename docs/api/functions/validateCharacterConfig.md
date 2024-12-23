@@ -16,4 +16,4 @@ Validation function
 
 ## Defined in
 
-packages/core/src/environment.ts:133
+[packages/core/src/environment.ts:133](https://github.com/Goketech/magent-agent/blob/main/packages/core/src/environment.ts#L133)

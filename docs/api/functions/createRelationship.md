@@ -20,4 +20,4 @@
 
 ## Defined in
 
-packages/core/src/relationships.ts:3
+[packages/core/src/relationships.ts:3](https://github.com/Goketech/magent-agent/blob/main/packages/core/src/relationships.ts#L3)

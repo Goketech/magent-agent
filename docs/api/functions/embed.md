@@ -28,4 +28,4 @@ If the API request fails
 
 ## Defined in
 
-packages/core/src/embedding.ts:147
+[packages/core/src/embedding.ts:147](https://github.com/Goketech/magent-agent/blob/main/packages/core/src/embedding.ts#L147)

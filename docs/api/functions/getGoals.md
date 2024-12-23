@@ -24,4 +24,4 @@
 
 ## Defined in
 
-packages/core/src/goals.ts:8
+[packages/core/src/goals.ts:8](https://github.com/Goketech/magent-agent/blob/main/packages/core/src/goals.ts#L8)

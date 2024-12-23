@@ -20,4 +20,4 @@ A detailed string of actions, including names and descriptions.
 
 ## Defined in
 
-packages/core/src/actions.ts:59
+[packages/core/src/actions.ts:59](https://github.com/Goketech/magent-agent/blob/main/packages/core/src/actions.ts#L59)

@@ -20,4 +20,4 @@
 
 ## Defined in
 
-packages/core/src/posts.ts:4
+[packages/core/src/posts.ts:4](https://github.com/Goketech/magent-agent/blob/main/packages/core/src/posts.ts#L4)

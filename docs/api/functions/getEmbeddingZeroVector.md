@@ -10,4 +10,4 @@
 
 ## Defined in
 
-packages/core/src/embedding.ts:120
+[packages/core/src/embedding.ts:120](https://github.com/Goketech/magent-agent/blob/main/packages/core/src/embedding.ts#L120)
