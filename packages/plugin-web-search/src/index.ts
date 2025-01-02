@@ -4,6 +4,7 @@ import {
     HandlerCallback,
     IAgentRuntime,
     Memory,
+    Content,
     Plugin,
     State,
 } from "@ai16z/eliza";
@@ -67,9 +68,17 @@ const webSearch: Action = {
                   }`
                 : "";
 
-            callback({
-                text: responseList,
-            });
+            const newMemory: Memory = {
+                ...message,
+                content: {
+                    ...message.content,
+                    text: responseList,
+                } as Content,
+            };
+
+            await runtime.messageManager.createMemory(newMemory);
+
+            callback(newMemory.content);
         } else {
             elizaLogger.error("search failed or returned no data.");
         }
