@@ -10,7 +10,7 @@ import { webSearchPlugin } from "@elizaos/plugin-web-search";
 export const mainCharacter: Character = {
     ...defaultCharacter,
     clients: [
-        Clients.TWITTER,
+        // Clients.TWITTER,
         Clients.TELEGRAM,
         Clients.DIRECT,
         Clients.DISCORD,
