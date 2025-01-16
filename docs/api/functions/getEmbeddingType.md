@@ -1,4 +1,4 @@
-[@ai16z/eliza v0.1.4-alpha.3](../index.md) / getEmbeddingType
+[@elizaos/core v0.1.7](../index.md) / getEmbeddingType
 
 # Function: getEmbeddingType()
 
@@ -14,4 +14,4 @@
 
 ## Defined in
 
-[packages/core/src/embedding.ts:101](https://github.com/Goketech/magent-agent/blob/main/packages/core/src/embedding.ts#L101)
+[packages/core/src/embedding.ts:114](https://github.com/elizaOS/eliza/blob/main/packages/core/src/embedding.ts#L114)

@@ -1,16 +1,37 @@
-import { elizaLogger } from "@ai16z/eliza";
+import { elizaLogger } from "@elizaos/core";
 import {
     Action,
     HandlerCallback,
     IAgentRuntime,
     Memory,
-    Content,
     Plugin,
     State,
-} from "@ai16z/eliza";
-import { generateWebSearch } from "@ai16z/eliza";
+    Content,
+} from "@elizaos/core";
+import { generateWebSearch } from "@elizaos/core";
+import { SearchResult } from "@elizaos/core";
+import { encodingForModel, TiktokenModel } from "js-tiktoken";
 
-import { SearchResult } from "@ai16z/eliza";
+const DEFAULT_MAX_WEB_SEARCH_TOKENS = 4000;
+const DEFAULT_MODEL_ENCODING = "gpt-3.5-turbo";
+
+function getTotalTokensFromString(
+    str: string,
+    encodingName: TiktokenModel = DEFAULT_MODEL_ENCODING
+) {
+    const encoding = encodingForModel(encodingName);
+    return encoding.encode(str).length;
+}
+
+function MaxTokens(
+    data: string,
+    maxTokens: number = DEFAULT_MAX_WEB_SEARCH_TOKENS
+): string {
+    if (getTotalTokensFromString(data) >= maxTokens) {
+        return data.slice(0, maxTokens);
+    }
+    return data;
+}
 
 const webSearch: Action = {
     name: "WEB_SEARCH",
@@ -72,7 +93,10 @@ const webSearch: Action = {
                 ...message,
                 content: {
                     ...message.content,
-                    text: responseList,
+                    text: MaxTokens(
+                        responseList,
+                        DEFAULT_MAX_WEB_SEARCH_TOKENS
+                    ),
                 } as Content,
             };
 
@@ -88,13 +112,13 @@ const webSearch: Action = {
             {
                 user: "{{user1}}",
                 content: {
-                    text: "Find the latest news about SpaceX launches.",
+                    text: "What are the current trending marketing strategies for SaaS companies?",
                 },
             },
             {
                 user: "{{agentName}}",
                 content: {
-                    text: "Here is the latest news about SpaceX launches:",
+                    text: "Here are the latest trending marketing strategies for SaaS companies:",
                     action: "WEB_SEARCH",
                 },
             },
@@ -103,13 +127,13 @@ const webSearch: Action = {
             {
                 user: "{{user1}}",
                 content: {
-                    text: "Can you find details about the iPhone 16 release?",
+                    text: "Find successful social media campaigns in the fashion industry this quarter.",
                 },
             },
             {
                 user: "{{agentName}}",
                 content: {
-                    text: "Here are the details I found about the iPhone 16 release:",
+                    text: "Here are some successful fashion industry social media campaigns I found:",
                     action: "WEB_SEARCH",
                 },
             },
@@ -118,26 +142,13 @@ const webSearch: Action = {
             {
                 user: "{{user1}}",
                 content: {
-                    text: "What is the schedule for the next FIFA World Cup?",
+                    text: "What are the latest changes to Meta's advertising policies?",
                 },
             },
             {
                 user: "{{agentName}}",
                 content: {
-                    text: "Here is the schedule for the next FIFA World Cup:",
-                    action: "WEB_SEARCH",
-                },
-            },
-        ],
-        [
-            {
-                user: "{{user1}}",
-                content: { text: "Check the latest stock price of Tesla." },
-            },
-            {
-                user: "{{agentName}}",
-                content: {
-                    text: "Here is the latest stock price of Tesla I found:",
+                    text: "Here are the recent updates to Meta's advertising policies:",
                     action: "WEB_SEARCH",
                 },
             },
@@ -146,13 +157,13 @@ const webSearch: Action = {
             {
                 user: "{{user1}}",
                 content: {
-                    text: "What are the current trending movies in the US?",
+                    text: "Find the average ROI for email marketing campaigns in the tech sector.",
                 },
             },
             {
                 user: "{{agentName}}",
                 content: {
-                    text: "Here are the current trending movies in the US:",
+                    text: "Here are the latest email marketing ROI statistics for the tech sector:",
                     action: "WEB_SEARCH",
                 },
             },
@@ -161,13 +172,13 @@ const webSearch: Action = {
             {
                 user: "{{user1}}",
                 content: {
-                    text: "What is the latest score in the NBA finals?",
+                    text: "What are the most effective TikTok marketing trends for B2C brands?",
                 },
             },
             {
                 user: "{{agentName}}",
                 content: {
-                    text: "Here is the latest score from the NBA finals:",
+                    text: "Here are the current effective TikTok marketing trends for B2C brands:",
                     action: "WEB_SEARCH",
                 },
             },
@@ -175,12 +186,29 @@ const webSearch: Action = {
         [
             {
                 user: "{{user1}}",
-                content: { text: "When is the next Apple keynote event?" },
+                content: {
+                    text: "Find case studies of successful content marketing strategies in fintech.",
+                },
             },
             {
                 user: "{{agentName}}",
                 content: {
-                    text: "Here is the information about the next Apple keynote event:",
+                    text: "Here are some notable content marketing case studies from fintech companies:",
+                    action: "WEB_SEARCH",
+                },
+            },
+        ],
+        [
+            {
+                user: "{{user1}}",
+                content: {
+                    text: "What are the key performance metrics for influencer marketing campaigns?",
+                },
+            },
+            {
+                user: "{{agentName}}",
+                content: {
+                    text: "Here are the essential KPIs for measuring influencer marketing success:",
                     action: "WEB_SEARCH",
                 },
             },
@@ -195,3 +223,5 @@ export const webSearchPlugin: Plugin = {
     evaluators: [],
     providers: [],
 };
+
+export default webSearchPlugin;

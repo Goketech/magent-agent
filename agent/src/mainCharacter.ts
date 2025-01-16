@@ -1,7 +1,11 @@
-import { Character, ModelProviderName, Clients } from "@ai16z/eliza";
-import { defaultCharacter } from "./defaultCharacter.ts";
-import { imageGenerationPlugin } from "@ai16z/plugin-image-generation";
-import { webSearchPlugin } from "@ai16z/plugin-web-search";
+import {
+    defaultCharacter,
+    Character,
+    ModelProviderName,
+    Clients,
+} from "@elizaos/core";
+import { imageGenerationPlugin } from "@elizaos/plugin-image-generation";
+import { webSearchPlugin } from "@elizaos/plugin-web-search";
 
 export const mainCharacter: Character = {
     ...defaultCharacter,

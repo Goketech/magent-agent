@@ -1,4 +1,4 @@
-import { elizaLogger } from "@ai16z/eliza";
+import { elizaLogger, generateText } from "@elizaos/core";
 import {
     Action,
     HandlerCallback,
@@ -6,9 +6,9 @@ import {
     Memory,
     Plugin,
     State,
-} from "@ai16z/eliza";
-import { generateImage } from "@ai16z/eliza";
-
+    ModelClass,
+} from "@elizaos/core";
+import { generateImage } from "@elizaos/core";
 import fs from "fs";
 import path from "path";
 import { validateImageGenConfig } from "./environment";
@@ -76,21 +76,30 @@ const imageGeneration: Action = {
         "MAKE_A",
     ],
     description: "Generate an image to go along with the message.",
+    suppressInitialMessage: true,
     validate: async (runtime: IAgentRuntime, _message: Memory) => {
         await validateImageGenConfig(runtime);
 
         const anthropicApiKeyOk = !!runtime.getSetting("ANTHROPIC_API_KEY");
+        const nineteenAiApiKeyOk = !!runtime.getSetting("NINETEEN_AI_API_KEY");
         const togetherApiKeyOk = !!runtime.getSetting("TOGETHER_API_KEY");
         const heuristApiKeyOk = !!runtime.getSetting("HEURIST_API_KEY");
         const falApiKeyOk = !!runtime.getSetting("FAL_API_KEY");
         const openAiApiKeyOk = !!runtime.getSetting("OPENAI_API_KEY");
+        const veniceApiKeyOk = !!runtime.getSetting("VENICE_API_KEY");
+        const livepeerGatewayUrlOk = !!runtime.getSetting(
+            "LIVEPEER_GATEWAY_URL"
+        );
 
         return (
             anthropicApiKeyOk ||
             togetherApiKeyOk ||
             heuristApiKeyOk ||
             falApiKeyOk ||
-            openAiApiKeyOk
+            openAiApiKeyOk ||
+            veniceApiKeyOk ||
+            nineteenAiApiKeyOk ||
+            livepeerGatewayUrlOk
         );
     },
     handler: async (
@@ -107,6 +116,8 @@ const imageGeneration: Action = {
             seed?: number;
             modelId?: string;
             jobId?: string;
+            stylePreset?: string;
+            hideWatermark?: boolean;
         },
         callback: HandlerCallback
     ) => {
@@ -115,10 +126,67 @@ const imageGeneration: Action = {
         const userId = runtime.agentId;
         elizaLogger.log("User ID:", userId);
 
-        const imagePrompt = message.content.text;
-        elizaLogger.log("Image prompt received:", imagePrompt);
+        const CONTENT = message.content.text;
 
-        // TODO: Generate a prompt for the image
+        const IMAGE_SYSTEM_PROMPT = `You are an expert marketing visual designer specializing in creating compelling prompts for AI-generated marketing content. You excel at crafting detailed descriptions that result in professional, brand-appropriate visuals. Focus on creating clean, commercial-quality imagery that would be suitable for marketing campaigns, social media, and advertising materials. Consider aspects like brand positioning, target audience, and marketing objectives. Your output should contain only the visual description, without instructions or marketing strategy.`;
+        const STYLE =
+            "professional, modern, and commercially polished with strong brand appeal";
+
+        const IMAGE_PROMPT_INPUT = `You are tasked with generating a marketing-focused image prompt based on content and specified style.
+            Create a detailed prompt that will generate a professional marketing visual while incorporating appropriate branding elements.\n\nInputs:\n<content>\n${CONTENT}\n</content>\n\n<style>\n${STYLE}\n</style>\n\nA effective marketing image prompt should include:\n\n
+
+1. Main subject/product focus
+2. Brand elements and identity
+3. Target audience consideration
+4. Marketing context/use case
+5. Professional styling
+6. Commercial-grade quality markers
+
+Follow these steps:\n\n1. Analyze the marketing objective and target audience
+\n\n
+2. Determine the key visual elements:
+   - Primary product or service focus
+   - Brand identity elements
+   - Target audience aspirational elements
+   - Marketing context requirements
+   - Professional styling needs
+
+3. Consider the marketing environment:
+   - Digital vs print considerations
+   - Platform-specific requirements
+   - Brand consistency elements
+
+4. Choose lighting that enhances product appeal and brand perception
+
+5. Select a color palette aligned with brand guidelines and marketing objectives
+
+6. Define the commercial mood and emotional response
+
+7. Plan composition for maximum marketing impact
+
+8. Incorporate the professional style while maintaining brand integrity
+
+Construct your prompt using:\n\n
+1. Primary Focus: Main product/service/message
+2. Brand Elements: Key visual brand identifiers
+3. Environment: Professional context and setting
+4. Lighting: Commercial-grade lighting description
+5. Colors: Brand-aligned color palette
+6. Mood: Desired customer emotional response
+7. Composition: Marketing-optimized layout
+
+Keep the prompt under 50 words while ensuring it will generate a professional marketing visual. Write only the prompt, nothing else.`;
+
+        const imagePrompt = await generateText({
+            runtime,
+            context: IMAGE_PROMPT_INPUT,
+            modelClass: ModelClass.MEDIUM,
+            customSystemPrompt: IMAGE_SYSTEM_PROMPT,
+        });
+
+        elizaLogger.log("Image prompt received:", imagePrompt);
+        const imageSettings = runtime.character?.settings?.imageSettings || {};
+        elizaLogger.log("Image settings:", imageSettings);
 
         const res: { image: string; caption: string }[] = [];
 
@@ -126,23 +194,59 @@ const imageGeneration: Action = {
         const images = await generateImage(
             {
                 prompt: imagePrompt,
-                width: options.width || 1024,
-                height: options.height || 1024,
-                ...(options.count != null ? { count: options.count || 1 } : {}),
-                ...(options.negativePrompt != null
-                    ? { negativePrompt: options.negativePrompt }
+                width: options.width || imageSettings.width || 1024,
+                height: options.height || imageSettings.height || 1024,
+                ...(options.count != null || imageSettings.count != null
+                    ? { count: options.count || imageSettings.count || 1 }
                     : {}),
-                ...(options.numIterations != null
-                    ? { numIterations: options.numIterations }
+                ...(options.negativePrompt != null ||
+                imageSettings.negativePrompt != null
+                    ? {
+                          negativePrompt:
+                              options.negativePrompt ||
+                              imageSettings.negativePrompt,
+                      }
                     : {}),
-                ...(options.guidanceScale != null
-                    ? { guidanceScale: options.guidanceScale }
+                ...(options.numIterations != null ||
+                imageSettings.numIterations != null
+                    ? {
+                          numIterations:
+                              options.numIterations ||
+                              imageSettings.numIterations,
+                      }
                     : {}),
-                ...(options.seed != null ? { seed: options.seed } : {}),
-                ...(options.modelId != null
-                    ? { modelId: options.modelId }
+                ...(options.guidanceScale != null ||
+                imageSettings.guidanceScale != null
+                    ? {
+                          guidanceScale:
+                              options.guidanceScale ||
+                              imageSettings.guidanceScale,
+                      }
                     : {}),
-                ...(options.jobId != null ? { jobId: options.jobId } : {}),
+                ...(options.seed != null || imageSettings.seed != null
+                    ? { seed: options.seed || imageSettings.seed }
+                    : {}),
+                ...(options.modelId != null || imageSettings.modelId != null
+                    ? { modelId: options.modelId || imageSettings.modelId }
+                    : {}),
+                ...(options.jobId != null || imageSettings.jobId != null
+                    ? { jobId: options.jobId || imageSettings.jobId }
+                    : {}),
+                ...(options.stylePreset != null ||
+                imageSettings.stylePreset != null
+                    ? {
+                          stylePreset:
+                              options.stylePreset || imageSettings.stylePreset,
+                      }
+                    : {}),
+                ...(options.hideWatermark != null ||
+                imageSettings.hideWatermark != null
+                    ? {
+                          hideWatermark:
+                              options.hideWatermark ||
+                              imageSettings.hideWatermark,
+                      }
+                    : {}),
             },
             runtime
         );
@@ -205,6 +309,7 @@ const imageGeneration: Action = {
                                 source: "imageGeneration",
                                 description: "...", //caption.title,
                                 text: "...", //caption.description,
+                                contentType: "image/png",
                             },
                         ],
                     },
@@ -221,17 +326,17 @@ const imageGeneration: Action = {
         }
     },
     examples: [
-        // TODO: We want to generate images in more abstract ways, not just when asked to generate an image
-
         [
             {
                 user: "{{user1}}",
-                content: { text: "Generate an image of a cat" },
+                content: {
+                    text: "Create a social media banner for our new tech product launch",
+                },
             },
             {
                 user: "{{agentName}}",
                 content: {
-                    text: "Here's an image of a cat",
+                    text: "Here's your social media banner",
                     action: "GENERATE_IMAGE",
                 },
             },
@@ -239,12 +344,14 @@ const imageGeneration: Action = {
         [
             {
                 user: "{{user1}}",
-                content: { text: "Generate an image of a dog" },
+                content: {
+                    text: "Generate a lifestyle image for our fitness app campaign",
+                },
             },
             {
                 user: "{{agentName}}",
                 content: {
-                    text: "Here's an image of a dog",
+                    text: "Here's your lifestyle marketing image",
                     action: "GENERATE_IMAGE",
                 },
             },
@@ -252,12 +359,14 @@ const imageGeneration: Action = {
         [
             {
                 user: "{{user1}}",
-                content: { text: "Create an image of a cat with a hat" },
+                content: {
+                    text: "Design an Instagram post for our organic food delivery service",
+                },
             },
             {
                 user: "{{agentName}}",
                 content: {
-                    text: "Here's an image of a cat with a hat",
+                    text: "Here's your Instagram marketing visual",
                     action: "GENERATE_IMAGE",
                 },
             },
@@ -265,12 +374,14 @@ const imageGeneration: Action = {
         [
             {
                 user: "{{user1}}",
-                content: { text: "Make an image of a dog with a hat" },
+                content: {
+                    text: "Create a professional LinkedIn header for our B2B software",
+                },
             },
             {
                 user: "{{agentName}}",
                 content: {
-                    text: "Here's an image of a dog with a hat",
+                    text: "Here's your LinkedIn header image",
                     action: "GENERATE_IMAGE",
                 },
             },
@@ -278,19 +389,20 @@ const imageGeneration: Action = {
         [
             {
                 user: "{{user1}}",
-                content: { text: "Paint an image of a cat with a hat" },
+                content: {
+                    text: "Generate an email banner for our holiday sale campaign",
+                },
             },
             {
                 user: "{{agentName}}",
                 content: {
-                    text: "Here's an image of a cat with a hat",
+                    text: "Here's your email marketing banner",
                     action: "GENERATE_IMAGE",
                 },
             },
         ],
     ],
 } as Action;
-
 export const imageGenerationPlugin: Plugin = {
     name: "imageGeneration",
     description: "Generate images",
@@ -298,3 +410,5 @@ export const imageGenerationPlugin: Plugin = {
     evaluators: [],
     providers: [],
 };
+
+export default imageGenerationPlugin;
